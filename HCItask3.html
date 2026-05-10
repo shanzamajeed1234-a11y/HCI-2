@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2D Graphics and Rendering</title>
+    <style>
+        body{
+            background: linear-gradient(to right, #ffe6f0, #fff5fa);
+            text-align:center;
+            font-family:Arial, sans-serif;
+            margin:0;
+            padding:20px;
+        }
+        h2{
+            color:#d63384;
+            text-shadow:1px 1px 2px #fff;
+        }
+        p{
+            color:#555;
+        }
+        canvas{
+            border:4px solid #ff69b4;
+            background:#fff0f5;
+            border-radius:15px;
+            box-shadow:0 0 15px rgba(255,105,180,0.5);
+        }
+    </style>
+</head>
+<body>
+<h2> Move the Object with Keyboard</h2>
+<p>Use Arrow Keys or W A S D to move the square</p>
+<canvas id="gameCanvas" width="700" height="450"></canvas>
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+// Player Data
+const player = {
+    x: 300,
+    y: 200,
+    size: 50,
+    color: "#ff69b4",
+    speed: 5
+};
+// Keyboard Controls
+const keys = {};
+window.addEventListener("keydown", (e) => {
+    keys[e.key] = true;
+});
+window.addEventListener("keyup", (e) => {
+    keys[e.key] = false;
+});
+// Update Player Position
+function update() {
+    if (keys["ArrowUp"] || keys["w"]) {
+        player.y -= player.speed;
+    }
+    if (keys["ArrowDown"] || keys["s"]) {
+        player.y += player.speed;
+    }
+    if (keys["ArrowLeft"] || keys["a"]) {
+        player.x -= player.speed;
+    }
+    if (keys["ArrowRight"] || keys["d"]) {
+        player.x += player.speed;
+    }
+    // Stop player from leaving canvas
+    if(player.x < 0) player.x = 0;
+    if(player.y < 0) player.y = 0;
+    if(player.x + player.size > canvas.width)
+        player.x = canvas.width - player.size;
+    if(player.y + player.size > canvas.height)
+        player.y = canvas.height - player.size;
+}
+// Render Graphics
+function render() {
+    // Clear Canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Background Circle
+    ctx.beginPath();
+    ctx.arc(120, 100, 50, 0, Math.PI * 2);
+    ctx.fillStyle = "skyblue";
+    ctx.fill();
+    // Green Rectangle
+    ctx.fillStyle = "lightgreen";
+    ctx.fillRect(520, 70, 100, 90);
+    // Purple Triangle
+    ctx.beginPath();
+    ctx.moveTo(350, 60);
+    ctx.lineTo(420, 170);
+    ctx.lineTo(280, 170);
+    ctx.closePath();
+    ctx.fillStyle = "plum";
+    ctx.fill();
+    // Yellow Star
+    ctx.fillStyle = "gold";
+    ctx.beginPath();
+    ctx.arc(600, 320, 35, 0, Math.PI * 2);
+    ctx.fill();
+    // Draw Player with Shadow
+    ctx.shadowColor = "#ff1493";
+    ctx.shadowBlur = 15;
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.size, player.size);
+    ctx.shadowBlur = 0;
+    update();
+    requestAnimationFrame(render);
+}
+render();
+</script>
+</body>
+</html>
